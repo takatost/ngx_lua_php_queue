@@ -76,8 +76,8 @@
         {
             timeHandle = setTimeout(function(){
                 count++;
-                $('#progressbar').css('width', count * 10 + '%');
-                if(count >= 10){
+                $('#progressbar').css('width', count + '%');
+                if(count >= 100){
                     var result = getQueueData();
                     console.log(result);
                     if(result.code == 1){
@@ -99,7 +99,7 @@
                     }
                 } else 
                     progress();
-            }, 1000);
+            }, 100);
         }
 
         function resetQueue()

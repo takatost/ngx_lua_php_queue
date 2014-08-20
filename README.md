@@ -26,11 +26,12 @@ https://github.com/takatost/ngx_lua_php_queue/blob/master/LICENSE
 <blockquote>
 打开`php_scripts`文档目录下的config.php，将redis地址和端口填入其中
 </blockquote>
-8. 到此，安装步骤全部完成，打开配置的域名首页来看看吧
+8. 建立cron任务，`*/1 * * * * php /opt/htdocs/lua_queue/php_scripts/cron_queue.php`，一分钟执行一次，更新redis计数器
+9. 到此，安装步骤全部完成，打开配置的域名首页来看看吧
 
 原理
 ------------
-
+![流程图](ngx_lua_php_queue.png)
 
 相关文档
 ------------
