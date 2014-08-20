@@ -34,5 +34,5 @@ https://github.com/takatost/ngx_lua_php_queue/blob/master/LICENSE
 
 相关文档
 ------------
-[http://openresty.org/cn/index.html](http://openresty.org/cn/index.html)
-[http://wiki.nginx.org/HttpRedis2Module](http://wiki.nginx.org/HttpRedis2Module)
+1. http://openresty.org/cn/index.html
+2. http://wiki.nginx.org/HttpRedis2Module
