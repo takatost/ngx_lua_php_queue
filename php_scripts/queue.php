@@ -1,8 +1,9 @@
 <?php
 include 'redisserver/RedisServer.php';
+include 'config.php';
 
 $redis = new RedisServer();
-$redis->connect('localhost', 6379);
+$redis->connect($redisConfig['host'], $redisConfig['port']);
 $stock = $redis->send_command('get', 'lua_queue_stock');
 if($stock && $stock > 0)
 {
