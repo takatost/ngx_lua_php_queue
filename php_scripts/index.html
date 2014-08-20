@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lua Queue</title>
+<link href="static/css/bootstrap.css" rel="stylesheet">
+<body>
+        <div class="wrap">
+        <nav id="w0" class="navbar-inverse navbar-fixed-top navbar" role="navigation"><div class="container"><div class="navbar-header">><a class="navbar-brand" href="/">Lua Queue</a></div></div></nav>
+<div class="jumbotron masthead">
+  <div class="container">
+    <h2>点击下方按钮进行排队</h2>
+
+                <p><button class="btn btn-lg btn-success" id="start_queue">排队</button></p>
+  </div>
+        </div>
+    </div>
+
+<div class="modal fade queue_model" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close cancel_queue" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">排队中&hellip;</h4>
+      </div>
+      <div class="modal-body">
+        <div class="progress">
+          <div class="progress-bar progress-bar-info progress-bar-striped" id="progressbar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+          </div>
+        </div>
+        <p id="message"></p>
+        <p id="environment"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success continue_queue" style="display: none;">继续排队</button>
+        <button type="button" class="btn btn-default cancel_queue" data-dismiss="modal">取消排队</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <footer class="footer">
+        <div class="container">
+        <p class="pull-left">&copy; Lua Queue 2014</p>
+        <p class="pull-right">By takatost</p>
+        </div>
+    </footer>
+
+    <script src="static/js/jquery.js"></script>
+    <script src="static/js/bootstrap.js"></script>
+    <script type="text/javascript">
+        var timeHandle;
+        var count = 0;
+        $('#start_queue').click(function(){
+            $('.queue_model').modal('toggle');
+            progress();
+        });
+
+        $(".continue_queue").click(function(){
+            $(".continue_queue").hide();
+            $("#message").html("");
+            $("#environment").html("");
+            resetQueue();
+            progress();
+        });
+
+        $('.queue_model').on('hidden.bs.modal', function (e) {
+            $(".continue_queue").hide();
+            $("#message").html("");
+            $("#environment").html("");
+            resetQueue();
+        });
+
+        function progress()
+        {
+            timeHandle = setTimeout(function(){
+                count++;
+                $('#progressbar').css('width', count * 10 + '%');
+                if(count >= 10){
+                    var result = getQueueData();
+                    console.log(result);
+                    if(result.code == 1){
+                        $("#message").css("color", "green");
+                        $("#message").html("排队成功，队列还剩" + result.queue +"，库存还剩" + result.stock);
+                        $("#environment").html("环境：" + result.environment);
+                        $(".continue_queue").show();
+                    } else {
+                        $("#message").css("color", "red");
+                        $("#environment").html("环境：" + result.environment);
+                        if(result.code == -2) {
+                            $("#message").html("排队失败，库存已为空");
+                            $(".continue_queue").show();
+                        } else {
+                            resetQueue();
+                            $("#message").html("排队失败，重新排队中...");
+                            progress();
+                        }
+                    }
+                } else 
+                    progress();
+            }, 1000);
+        }
+
+        function resetQueue()
+        {
+            timeHandle && clearTimeout(timeHandle);
+            count = 0;
+            $('#progressbar').css('width', '0%');
+        }
+
+        function getQueueData()
+        {
+            var result = {"code" : 0, "message" : "获取数据失败！", "environment": "Jquery"};
+            $.ajax({
+                type: "get",
+                dataType:"json",
+                async : false,  
+                url: "http://www.luaqueue.com/queue.php",
+                success: function(data){
+                    if(!data)
+                        result = {"code" : 0, "message" : "获取数据失败！", "environment": "Jquery"};
+
+                    result = data;
+                },
+                error : function(error) {  
+                    result = {"code" : 0, "message" : "获取数据失败！", "environment": "Jquery"};  
+                }  
+            });
+
+            return result;
+        }
+    </script>
+</body>
+</html>
